@@ -1,0 +1,24 @@
+name: ShipGate
+description: Block pull requests until authors pass a hosted quiz about their own diff.
+author: aaryanporwal
+branding:
+  icon: shield
+  color: blue
+inputs:
+  shipgate-url:
+    description: ShipGate hosted app URL.
+    required: false
+    default: https://shipgate.me
+  fail-on-error:
+    description: Fail the workflow if ShipGate cannot create a quiz.
+    required: false
+    default: "true"
+runs:
+  using: composite
+  steps:
+    - name: Create ShipGate quiz
+      shell: bash
+      env:
+        SHIPGATE_URL: ${{ inputs.shipgate-url }}
+        SHIPGATE_FAIL_ON_ERROR: ${{ inputs.fail-on-error }}
+      run: node "$GITHUB_ACTION_PATH/shipgate-action.mjs"
