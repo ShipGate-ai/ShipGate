@@ -2,7 +2,17 @@
 
 ShipGate blocks public pull requests until the author passes an AI-generated quiz about their own diff.
 
-No LLM key. No database. No hosted app setup. Install the GitHub App, add one workflow, and require the `shipgate/comprehension` status check.
+No LLM key. No database. No self-hosted app setup. Install the ShipGate-AI GitHub App, add one workflow, and require the `shipgate/comprehension` status check.
+
+ShipGate is a hosted public beta at https://shipgate.me. It supports public repositories only. Pull request diffs are sent to ShipGate hosted servers so the service can generate quiz content.
+
+## How it works
+
+1. A pull request opens or updates in a public repository.
+2. This action asks GitHub Actions for an OIDC token and sends the PR identity to ShipGate.
+3. The hosted ShipGate service verifies the workflow request, reads the public PR diff through the ShipGate-AI GitHub App, and generates four AI-generated multiple-choice questions.
+4. ShipGate comments with a quiz link and sets the `shipgate/comprehension` status.
+5. The PR author passes the quiz, then ShipGate marks the status successful.
 
 ## Install
 
@@ -33,11 +43,20 @@ No LLM key. No database. No hosted app setup. Install the GitHub App, add one wo
 
 3. Open a pull request. ShipGate will post a quiz link and create the `shipgate/comprehension` status.
 
-4. Add `shipgate/comprehension` as a required status check in your branch protection rules.
+4. Add `shipgate/comprehension` as a required status check:
+
+   - Open your repository settings.
+   - Go to Branches, then edit the branch protection rule for your protected branch.
+   - Enable required status checks and select `shipgate/comprehension`.
+   - Save the rule.
 
 ## Public beta
 
-ShipGate currently supports public repositories only. Private repository support will require an explicit opt-in plan because PR diffs are sent to ShipGate's hosted servers to generate quizzes.
+ShipGate currently supports public repositories only. Private repositories are rejected before quiz generation.
+
+Pull request diffs go to ShipGate hosted servers at `https://shipgate.me` and may be sent to an AI model provider to generate quiz questions, answer choices, correct answers, and explanations. Quiz content is AI-generated and can be incomplete, incorrect, ambiguous, or unsuitable for a specific repository.
+
+Passing ShipGate is a comprehension signal. It is not a security review, correctness guarantee, or replacement for human code review.
 
 ## Inputs
 
@@ -49,6 +68,20 @@ ShipGate currently supports public repositories only. Private repository support
 ## Permissions
 
 The workflow needs `id-token: write` so ShipGate can verify the request came from GitHub Actions. The ShipGate-AI GitHub App handles PR diff reads, PR comments, and commit status updates.
+
+## Policies and reports
+
+- Terms: https://shipgate.me/terms
+- Privacy: https://shipgate.me/privacy
+- AI disclosure: https://shipgate.me/ai
+
+Report bugs, improper AI outputs, privacy requests, legal requests, and security concerns to legal@shipgate.me.
+
+## Marketplace publishing
+
+This repository is intentionally minimal for GitHub Marketplace publication: one root `action.yml`, the action script, this README, and the MIT license. Do not add workflow files before publishing the Marketplace action.
+
+GitHub Marketplace requires a unique action metadata `name`. Before publishing the release, confirm that `ShipGate` is still available in the Marketplace publish flow.
 
 ## License
 

@@ -1,5 +1,5 @@
 name: ShipGate
-description: Block pull requests until authors pass a hosted quiz about their own diff.
+description: Block public PRs until authors pass a hosted AI-generated quiz about their own diff.
 author: aaryanporwal
 branding:
   icon: shield

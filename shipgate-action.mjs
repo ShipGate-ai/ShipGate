@@ -31,10 +31,16 @@ async function main() {
     throw new Error("ShipGate must run on pull_request events");
   }
   if (event.repository?.private) {
-    throw new Error("ShipGate free beta only supports public repositories");
+    throw new Error(
+      "ShipGate free beta only supports public repositories. Private repositories are rejected before quiz generation."
+    );
   }
 
   const appUrl = (process.env.SHIPGATE_URL || "https://shipgate.me").replace(/\/$/, "");
+  console.log("ShipGate free beta supports public repositories only.");
+  console.log(`Creating an AI-generated comprehension quiz for ${event.repository.full_name}#${event.pull_request.number}.`);
+  console.log(`ShipGate hosted service at ${appUrl} will read the public PR diff to generate the quiz.`);
+
   const oidcToken = await getOidcToken(appUrl);
   const payload = {
     oidcToken,
@@ -53,15 +59,24 @@ async function main() {
   const body = await response.json().catch(() => ({}));
 
   if (!response.ok) {
-    throw new Error(body.error || `ShipGate request failed: ${response.status}`);
+    throw new Error(
+      body.error ||
+        `ShipGate could not create a quiz from the hosted service (${response.status}). ` +
+          "Check that the ShipGate-AI GitHub App is installed and that this workflow has id-token: write permission."
+    );
   }
 
-  console.log(`ShipGate quiz created: ${body.quizUrl}`);
+  if (body.quizUrl) {
+    console.log(`ShipGate quiz created: ${body.quizUrl}`);
+  } else {
+    console.log("ShipGate quiz created. Check the pull request comment for the quiz link.");
+  }
 }
 
 main().catch((error) => {
-  console.error(error);
+  console.error(`ShipGate failed: ${error.message || error}`);
   if (process.env.SHIPGATE_FAIL_ON_ERROR === "false") {
+    console.error("Continuing because fail-on-error is false.");
     process.exit(0);
   }
   process.exit(1);
