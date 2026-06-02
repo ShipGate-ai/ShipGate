@@ -79,10 +79,10 @@ Report bugs, improper AI outputs, privacy requests, legal requests, and security
 
 ## Marketplace publishing
 
-This repository is intentionally minimal for GitHub Marketplace publication: one root `action.yml`, the action script, this README, and the MIT license. Do not add workflow files before publishing the Marketplace action.
+This repository is intentionally minimal for GitHub Marketplace publication: one root `action.yml`, the action script, this README, the NOTICE file, and the AGPL-3.0 license. Do not add workflow files before publishing the Marketplace action.
 
 GitHub Marketplace requires a unique action metadata `name`. Before publishing the release, confirm that `ShipGate` is still available in the Marketplace publish flow.
 
 ## License
 
-MIT
+AGPL-3.0
