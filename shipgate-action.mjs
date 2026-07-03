@@ -30,16 +30,11 @@ async function main() {
   if (!event.pull_request) {
     throw new Error("ShipGate must run on pull_request events");
   }
-  if (event.repository?.private) {
-    throw new Error(
-      "ShipGate free beta only supports public repositories. Private repositories are rejected before quiz generation."
-    );
-  }
 
   const appUrl = (process.env.SHIPGATE_URL || "https://shipgate.me").replace(/\/$/, "");
-  console.log("ShipGate free beta supports public repositories only.");
+  console.log("ShipGate free beta supports public repositories and explicitly allowlisted private repositories.");
   console.log(`Creating an AI-generated comprehension quiz for ${event.repository.full_name}#${event.pull_request.number}.`);
-  console.log(`ShipGate hosted service at ${appUrl} will read the public PR diff to generate the quiz.`);
+  console.log(`ShipGate hosted service at ${appUrl} will verify repository access and read the PR diff to generate the quiz.`);
 
   const oidcToken = await getOidcToken(appUrl);
   const payload = {
