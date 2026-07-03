@@ -38,7 +38,7 @@ ShipGate is a hosted public beta at https://shipgate.me. It supports public repo
      shipgate:
        runs-on: ubuntu-latest
        steps:
-         - uses: aaryanporwal/shipgate@v1
+         - uses: ShipGate-ai/ShipGate@v1.0.1
    ```
 
 3. Open a pull request. ShipGate will post a quiz link and create the `shipgate/comprehension` status.
